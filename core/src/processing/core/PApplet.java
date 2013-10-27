@@ -435,14 +435,16 @@ public class PApplet extends Activity implements PConstants, Runnable {
     Window window = getWindow();
 
     // Take up as much area as possible
-    requestWindowFeature(Window.FEATURE_NO_TITLE);
-    window.setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN,
-                    WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN);
-
-    // This does the actual full screen work
-    window.setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
-                    WindowManager.LayoutParams.FLAG_FULLSCREEN);
-
+    if (!keepTitlebar()) {
+	    requestWindowFeature(Window.FEATURE_NO_TITLE);
+	    window.setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN,
+	                    WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN);
+	
+	    // This does the actual full screen work
+	    window.setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+	                    WindowManager.LayoutParams.FLAG_FULLSCREEN);
+    }
+    
     DisplayMetrics dm = new DisplayMetrics();
     getWindowManager().getDefaultDisplay().getMetrics(dm);
     displayWidth = dm.widthPixels;
@@ -995,6 +997,11 @@ public class PApplet extends Activity implements PConstants, Runnable {
 
   public String sketchRenderer() {
     return JAVA2D;
+  }
+
+
+  public boolean keepTitlebar() {
+	return false;
   }
 
 
@@ -2745,10 +2752,9 @@ public class PApplet extends Activity implements PConstants, Runnable {
 
   @Override
   public void onBackPressed() {
-	  exit();
+    exit();
   }
-
-
+  
   protected void nativeKeyEvent(android.view.KeyEvent event) {
     // event.isPrintingKey() returns false for whitespace and others,
     // which is a problem if the space bar or tab key are used.
